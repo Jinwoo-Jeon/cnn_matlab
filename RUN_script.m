@@ -7,11 +7,11 @@
 inputSize = 28;
 
 disp('loading data...')
-preproc_data;
+% preproc_data;
 
 disp('init model...')
 % init;
-load('61023_epoch_1_iter_200_err_12.90].mat');
+load('610223_epoch_1_iter_200_err_10.30].mat');
 
 
 

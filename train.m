@@ -1,7 +1,5 @@
 function train(model, opt, data, label, test_data, test_label)
 
-costArr= [];
-errArr = [];
 cur_epoch = opt.solver.startepoch;
 cur_iter = opt.solver.startiter;
 train_num = size(data,1);
@@ -32,10 +30,12 @@ while cur_epoch <= opt.solver.epoch
             cost = mean(1/2*sum(error.^2,4),1);
         end
         
-        fprintf('cost: %d \n', cost);
-        costArr = [costArr cost]; %#ok<AGROW>
+        costLog = sprintf('cost: %d', cost);
+        disp(costLog);
+        opt.solver.costArr = [opt.solver.costArr cost];
         subplot(2,1,1);
-        plot(costArr);
+        plot(opt.solver.costArr);
+        title(costLog)
         
         %         fprintf('backward...\n');
         model = backward(model, opt, cnn_res, data_batch, error);
@@ -49,10 +49,12 @@ while cur_epoch <= opt.solver.epoch
             [~, ind] = max(testres{size(opt.layer,2)},[],4);
             [~, ind2] = max(test_label(rand_test_idx(1:1000),:),[],2);
             errRate = mean(min(abs(ind-ind2),ones(size(ind))))*100;
-            fprintf('err rate: %.2f \n', errRate);
-            errArr = [errArr errRate]; %#ok<AGROW>
+            errLog = sprintf('err rate: %.2f', errRate);
+            disp(errLog);
+            opt.solver.errArr = [opt.solver.errArr errRate];
             subplot(2,1,2);
-            plot(errArr);
+            plot(opt.solver.errArr);
+            title(errLog)
             toc
         end
         if rem(cur_epoch*floor(train_num/batch_num)+cur_iter,opt.solver.savePeriod)==0
@@ -68,6 +70,7 @@ while cur_epoch <= opt.solver.epoch
         cur_iter = cur_iter+1;
     end
     cur_epoch = cur_epoch+1;
+    cur_iter = 1;
 end
 
 end
