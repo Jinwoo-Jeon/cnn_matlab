@@ -2,23 +2,24 @@ function train(model, opt, data, label, test_data, test_label)
 
 costArr= [];
 errArr = [];
-cur_epoch = 0;
+cur_epoch = opt.solver.startepoch;
+cur_iter = opt.solver.startiter;
 train_num = size(data,1);
 test_num = size(test_data,1);
 batch_num = opt.solver.batchsize;
 rand_train_idx = randperm(train_num);
-while cur_epoch<opt.solver.epoch
-    for i=1:floor(train_num/batch_num)
+while cur_epoch <= opt.solver.epoch
+    while cur_iter <= floor(train_num/batch_num)
         opt.solver.lr = opt.solver.baselr * (1 + opt.solver.gamma ...
-            * (cur_epoch*floor(train_num/batch_num)+i)) ^ (-opt.solver.power);
+            * (cur_epoch*floor(train_num/batch_num)+cur_iter)) ^ (-opt.solver.power);
         tic
         fprintf('---------------- epoch: %d, batch: %d, lr: %f----------------\n', ...
-            cur_epoch, i, opt.solver.lr);
+            cur_epoch, cur_iter, opt.solver.lr);
         %         fprintf('forward...\n');
-        data_batch = data(rand_train_idx((i-1)*batch_num+1:i*batch_num),:,:);
+        data_batch = data(rand_train_idx((cur_iter-1)*batch_num+1:cur_iter*batch_num),:,:);
         [cnn_res, opt] = forward(model, opt, data_batch);
         
-        batch_label = permute(label(rand_train_idx((i-1)*batch_num+1:i*batch_num),:), [1 3 4 2]);
+        batch_label = permute(label(rand_train_idx((cur_iter-1)*batch_num+1:cur_iter*batch_num),:), [1 3 4 2]);
         error = batch_label-cnn_res{size(opt.layer,2)};
         %         [squeeze(batch_label(1,:)); squeeze(cnn_res{size(option.layer,2)}(1,:))]'
         
@@ -40,7 +41,7 @@ while cur_epoch<opt.solver.epoch
         model = backward(model, opt, cnn_res, data_batch, error);
         toc
         
-        if rem(i,opt.solver.testPeriod)==0
+        if rem(cur_iter,opt.solver.testPeriod)==0
             tic
             fprintf('test...\n');
             rand_test_idx = randperm(test_num);
@@ -54,14 +55,17 @@ while cur_epoch<opt.solver.epoch
             plot(errArr);
             toc
         end
-        if rem(cur_epoch*floor(train_num/batch_num)+i,opt.solver.savePeriod)==0
+        if rem(cur_epoch*floor(train_num/batch_num)+cur_iter,opt.solver.savePeriod)==0
             c=clock;
-            filename = sprintf('%d%d%d%d [epoch: %d, iter: %d, err: %.2f].mat' ...
-                ,c(2),c(3),c(4),c(5),cur_epoch,i, errRate);
+            opt.solver.startepoch = cur_epoch;
+            opt.solver.startiter = cur_iter+1;
+            filename = sprintf('%d%d%d%d_epoch_%d_iter_%d_err_%.2f].mat' ...
+                ,c(2),c(3),c(4),c(5),cur_epoch,cur_iter, errRate);
             fprintf('saved <%s> \n', filename);
             save(filename,'model' ,'opt');
         end
         drawnow;
+        cur_iter = cur_iter+1;
     end
     cur_epoch = cur_epoch+1;
 end

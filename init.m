@@ -13,7 +13,8 @@ opt.solver.inputsize = inputSize;
 opt.solver.verbose = false;
 opt.solver.testPeriod = 10;
 opt.solver.savePeriod = 200;
-
+opt.solver.startepoch = 1;
+opt.solver.startiter = 1;
 ind=1;
 opt.layer(ind).type='CONV';
 opt.layer(ind).num_output=20;
