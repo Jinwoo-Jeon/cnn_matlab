@@ -140,6 +140,29 @@ for i=size(option.layer,2):-1:1
                 toc
                 fprintf('----------------------------\n\n');
             end
+        case 'PRELU'
+            if option.solver.verbose
+                fprintf('---------- prelu %d ----------\n\n', i);
+                tic            
+            end
+            
+            temp_zero = zeros(size(pre_layer_val),'gpuArray');
+            del = mean(sum(sum(sum(min(pre_layer_val,temp_zero).*layer_error_in,2),3),4));
+            res.prev_del_weight{i} = lr * del + option.solver.momentum * res.prev_del_weight{i};
+            res.weight{i} = res.weight{i} + res.prev_del_weight{i};
+            
+            layer_error_out = layer_error_in;
+            layer_error_out(pre_layer_val<0)=layer_error_out(pre_layer_val<0)*res.weight{i}; 
+            
+            if option.solver.verbose
+%                 disp('input');
+%                 disp(size(layer_error_in));
+%                 disp('output');
+%                 disp(size(layer_error_out));
+                toc
+                fprintf('----------------------------\n\n');
+            end
+            
         case 'SOFTMAX'
             if option.solver.verbose
                 fprintf('--------- softmax %d ---------\n\n', i);

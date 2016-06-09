@@ -119,6 +119,21 @@ for i=1:size(option.layer,2)
                 toc
                 fprintf('----------------------------\n\n');
             end
+        case 'PRELU'
+            if option.solver.verbose
+                fprintf('---------- prelu %d ----------\n\n', i);
+                tic            
+            end
+            temp_zero = zeros(size(layer_input),'gpuArray');            
+            layer_out = max(temp_zero, layer_input)+min(temp_zero,layer_input)*model_cnn.weight{i};
+            if option.solver.verbose
+%                 disp('input');
+%                 disp(size(layer_input));
+%                 disp('output');
+%                 disp(size(layer_out));
+                toc
+                fprintf('----------------------------\n\n');
+            end
         case 'SOFTMAX'
             if option.solver.verbose
                 fprintf('--------- softmax %d ---------\n\n', i);

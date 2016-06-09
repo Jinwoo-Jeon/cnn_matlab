@@ -7,9 +7,8 @@ tmp_outputSize = option.solver.inputsize;
 for i=1:num_layers
     switch(option.layer(i).type)
         case 'CONV'
-%             weightVar = 1/sqrt(tmp_outputCH*option.layer(i).kernel*option.layer(i).kernel*option.layer(i).num_output);
-            weightVar = 1/(tmp_outputCH);
-            % weightVar = 2/(tmp_outputCH+option.layer(i).num_output);
+            weightVar = sqrt(2/(tmp_outputCH*option.layer(i).kernel*option.layer(i).kernel));
+%             weightVar = 1/(tmp_outputCH);
             res.weight{i} = (weightVar) * randn(1, option.layer(i).kernel, ...
                 option.layer(i).kernel, tmp_outputCH, option.layer(i).num_output, 'gpuArray');
             res.prev_del_weight{i} = zeros(size(res.weight{i}));
@@ -36,9 +35,8 @@ for i=1:num_layers
                 fprintf('---------- pool %d ----------\n\n', i);
             end
         case 'FC'
-%             weightVar = 1/sqrt(tmp_outputCH*tmp_outputSize*tmp_outputSize*option.layer(i).num_output);
-            weightVar = 1/(tmp_outputCH);
-            % weightVar = 2/(tmp_outputCH+option.layer(i).num_output);
+            weightVar = sqrt(2/(tmp_outputCH*tmp_outputSize*tmp_outputSize));
+%             weightVar = 1/(tmp_outputCH);
             res.weight{i} = (weightVar) * randn(1, tmp_outputSize, tmp_outputSize, ...
                 tmp_outputCH, option.layer(i).num_output,'gpuArray');
             res.prev_del_weight{i} = zeros(size(res.weight{i}));
@@ -59,6 +57,12 @@ for i=1:num_layers
         case 'RELU'
             if option.solver.verbose
                 fprintf('---------- relu %d ----------\n\n', i);
+            end
+        case 'PRELU'
+            res.weight{i} = 0.25;
+            res.prev_del_weight{i} = 0;
+            if option.solver.verbose
+                fprintf('---------- prelu %d ----------\n\n', i);
             end
         case 'SOFTMAX'
             if option.solver.verbose

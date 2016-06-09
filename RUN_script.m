@@ -3,15 +3,15 @@
 % 
 % weight output: 
 % 	batch x width x height x in_chan x out_chan
-% gdv=gpuDevice(1); reset(gdv); wait(gdv);
 inputSize = 28;
+gdv=gpuDevice(1); reset(gdv); wait(gdv);
 
 disp('loading data...')
-% preproc_data;
+preproc_data;
 
 disp('init model...')
-% init;
-load('610223_epoch_1_iter_200_err_10.30].mat');
+init;
+% load('610223_epoch_1_iter_200_err_10.30].mat');
 
 
 
