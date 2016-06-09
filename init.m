@@ -15,6 +15,7 @@ opt.solver.testPeriod = 10;
 opt.solver.savePeriod = 200;
 opt.solver.startepoch = 1;
 opt.solver.startiter = 1;
+
 ind=1;
 opt.layer(ind).type='CONV';
 opt.layer(ind).num_output=20;
@@ -42,15 +43,8 @@ opt.layer(ind).stride=2;
 opt.layer(ind).padding=0;
 
 ind=ind+1;
-opt.layer(ind).type='DROP';
-opt.layer(ind).rate=0.5;
-
-ind=ind+1;
 opt.layer(ind).type='FC';
 opt.layer(ind).num_output=500;
-
-ind=ind+1;
-opt.layer(ind).type='RELU';
 
 ind=ind+1;
 opt.layer(ind).type='FC';
