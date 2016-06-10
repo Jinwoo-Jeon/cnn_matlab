@@ -1,4 +1,4 @@
-function [res, option] = forward(model_cnn,option,input)
+function [res, option] = forward(model_cnn,option,input,isTest)
 clear layer_out
 res = cell(size(option.layer,2),1);
 
@@ -156,11 +156,16 @@ for i=1:size(option.layer,2)
                 fprintf('---------- drop %d ----------\n\n', i);
                 tic            
             end
-            rate = option.layer(i).rate;
-            drop_mask = rand(size(layer_input));
-            drop_mask = drop_mask>rate;
-            layer_out = layer_input.*drop_mask/rate;
-            option.layer(i).mask = drop_mask;
+            
+            if isTest
+                layer_out = layer_input;
+            else
+                rate = option.layer(i).rate;
+                drop_mask = rand(size(layer_input));
+                drop_mask = drop_mask<rate;
+                layer_out = layer_input.*drop_mask/rate;
+                option.layer(i).mask = drop_mask;                
+            end
             
             if option.solver.verbose
 %                 disp('input');

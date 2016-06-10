@@ -1,7 +1,5 @@
 clear model opt;
 
-
-
 opt.solver.baselr = 0.01;
 opt.solver.lr = opt.solver.baselr;
 opt.solver.gamma = 0.001;
@@ -13,7 +11,7 @@ opt.solver.momentum = 0.9;
 opt.solver.pooling = 'MAX';
 opt.solver.inputsize = inputSize;
 opt.solver.verbose = false;
-opt.solver.testPeriod = 10;
+opt.solver.testPeriod = 50;
 opt.solver.savePeriod = 250;
 opt.solver.startepoch = 1;
 opt.solver.startiter = 1;
@@ -39,7 +37,7 @@ opt.layer(ind).stride=1;
 opt.layer(ind).padding=0;
 
 ind=ind+1;
-opt.layer(ind).type='RELU';
+opt.layer(ind).type='PRELU';
 
 ind=ind+1;
 opt.layer(ind).type='POOL';
@@ -76,6 +74,7 @@ opt.layer(ind).num_output=10;
 
 ind=ind+1;
 opt.layer(ind).type='SOFTMAX';
+
 
 
 
