@@ -1,114 +1,171 @@
-Make CNN for MNIST dataset
+#Make CNN for MNIST dataset
 
-Jinwoo Jeon
-1. ÄÚµå ¼³¸í ¹× ½ÇÇà
-¸ÅÆ®·¦ ÄÚµå·Î ±¸¼ºµÇ¾î ÀÖÀ½ (repelem ÇÔ¼ö ¶§¹®¿¡ MATLAB 2015a ÀÌ»ó ¹öÀü¿¡¼­¸¸ ½ÇÇà °¡´ÉÇÒ µí)
-RUN_script.m
-- ½ÇÇà¿ë ½ºÅ©¸³Æ®
-- preproc_data ÁÖ¼®À» ÇØÁ¦ÇÏ¸é µ¥ÀÌÅÍ¸¦ »õ·Î ¸¸µé°í init ÁÖ¼®À» ÇØÁ¦ÇÏ¸é ¸ğµ¨À» »õ·Î ¸¸µë
-- ÇĞ½ÀµÈ ¸ğµ¨À» ºÒ·¯¿À·Á´Â °æ¿ì initÀ» ÁÖ¼®Ã³¸®ÇÏ°í, .matÆÄÀÏÀ» ¼öµ¿À¸·Î ºÒ·¯¿Â µÚ RUN_script.mÀ» ½ÇÇàÇÏ¸é µÊ
-- Å×½ºÆ®¸¸ ÇÏ·Á´Â °æ¿ì trainÀ» ÁÖ¼®ÇÏ°í test¸¦ ÁÖ¼® ÇØÁ¦ÇÑ ÈÄ ½ÇÇà
-preproc_data.m
-- MNIST.matÀ» ·ÎµåÇØ¼­ µ¥ÀÌÅÍ¸¦ °¡°øÇÏ´Â ½ºÅ©¸³Æ®
-- Data augmentation ¹× MeanÁ¦°Å (test data¿¡¼­µµ train meanÁ¦°Å)
-init.m
-- ÇĞ½À¿¡ ÇÊ¿äÇÑ ÆÄ¶ó¹ÌÅÍ ¹× ¸ğµ¨À» Á¤ÀÇÇÏ´Â ½ºÅ©¸³Æ®
-- opt.solver struct¿¡ ÇĞ½À ÆÄ¶ó¹ÌÅÍ°¡ ÀúÀåµÇ°í, opt.layer struct¿¡ ¸ğµ¨ ÆÄ¶ó¹ÌÅÍ°¡ Á¤ÀÇµÊ
-makeModel.m
-- init.m¿¡¼­ Á¤ÀÇµÈ ¸ğµ¨ ÆÄ¶ó¹ÌÅÍ¸¦ ¹ÙÅÁÀ¸·Î weight, bias µî ÇĞ½À ´ë»ó º¯¼öµéÀ» ÃÊ±âÈ­ÇÏ¿© model struct ¹× optionÀ» returnÇÏ´Â ÇÔ¼ö
-- weightÀÇ °æ¿ì Var(1,0)*sqrt(2/n)À¸·Î ÃÊ±âÈ­
-- biasÀÇ °æ¿ì 0·Î ÃÊ±âÈ­
-- PReLUÀÇ alpha°ªÀº ÇØ´ç layer weight·Î ÀúÀåµÇ°í ³í¹®¿¡¼­ »ç¿ëÇÑ °ªÀÎ 0.25·Î ÃÊ±âÈ­
-train.m
-- ÇĞ½À loop¸¦ ½ÇÇàÇÏ´Â ÇÔ¼ö
-- train data¸¦ batch size´ë·Î ³ª´©°í ·£´ıÇÑ index¸¦ ºÎ¿©ÇÔ
-- learning rate¸¦ iterationÀÌ Áö³ª¸é¼­ decay ÇÏµµ·Ï ¼³Á¤ (inv)
-learning rate=base_lr*(1+gamma*iter)^(-power)
-- forward.m ÇÔ¼ö¸¦ ÀÌ¿ëÇÏ¿© °¢ layerÀÇ outputÀ» °è»ê
-- forward °è»ê°á°ú¸¦ ÀÌ¿ëÇÏ¿© Cross Entropy (Softmax output) ³ª MSE (MLP output) ¸¦ Cost functionÀ¸·Î °è»ê
-- error¿Í °¢ layer oututÀ» ÀÌ¿ëÇÏ¿© backward.m ÇÔ¼ö¸¦ ½ÇÇà (back-propagation)
-- error¿Í test °á°ú¸¦ ÀÌ¿ëÇÏ¿© ±×·¡ÇÁ¸¦ plot
-test.m
-- forward.m ÇÔ¼ö¸¦ ÀÌ¿ëÇÏ¿© test data¿¡ ´ëÇÑ error rate¸¦ return 
-drawFromMat.m
-- ÇĞ½ÀµÈ ¸ğµ¨À» import ÇÏ¿© cost graph¿Í error rate graph¸¦ ±×¸®´Â ½ºÅ©¸³Æ®
-forward.m
-- CNN model¿¡ input batch¸¦ ³Ö¾î °¢ layerÀÇ outputÀ» return
-- Convolution layer
-Y=W*X+b
-(X, Y: 4-dim matrix, batch_size * width * height * channel)
-(W: 5-dim matrix, 1 * kernel_width * kernel_height * input_channel * output_channel)
+###Jinwoo Jeon
+
+##1. ì½”ë“œ ì„¤ëª… ë° ì‹¤í–‰
+ë§¤íŠ¸ë© ì½”ë“œë¡œ êµ¬ì„±ë˜ì–´ ìˆìŒ (repelem í•¨ìˆ˜ ë•Œë¬¸ì— MATLAB 2015a ì´ìƒ ë²„ì „ì—ì„œë§Œ ì‹¤í–‰ ê°€ëŠ¥í•  ë“¯)
+###RUN_script.m
+- ì‹¤í–‰ìš© ìŠ¤í¬ë¦½íŠ¸
+- preproc_data ì£¼ì„ì„ í•´ì œí•˜ë©´ ë°ì´í„°ë¥¼ ìƒˆë¡œ ë§Œë“¤ê³  init ì£¼ì„ì„ í•´ì œí•˜ë©´ ëª¨ë¸ì„ ìƒˆë¡œ ë§Œë“¬
+- í•™ìŠµëœ ëª¨ë¸ì„ ë¶ˆëŸ¬ì˜¤ë ¤ëŠ” ê²½ìš° initì„ ì£¼ì„ì²˜ë¦¬í•˜ê³ , .matíŒŒì¼ì„ ìˆ˜ë™ìœ¼ë¡œ ë¶ˆëŸ¬ì˜¨ ë’¤ RUN_script.mì„ ì‹¤í–‰í•˜ë©´ ë¨
+- í…ŒìŠ¤íŠ¸ë§Œ í•˜ë ¤ëŠ” ê²½ìš° trainì„ ì£¼ì„í•˜ê³  testë¥¼ ì£¼ì„ í•´ì œí•œ í›„ ì‹¤í–‰
+###preproc_data.m
+- MNIST.matì„ ë¡œë“œí•´ì„œ ë°ì´í„°ë¥¼ ê°€ê³µí•˜ëŠ” ìŠ¤í¬ë¦½íŠ¸
+- Data augmentation ë° Meanì œê±° (test dataì—ì„œë„ train meanì œê±°)
+###init.m
+- í•™ìŠµì— í•„ìš”í•œ íŒŒë¼ë¯¸í„° ë° ëª¨ë¸ì„ ì •ì˜í•˜ëŠ” ìŠ¤í¬ë¦½íŠ¸
+- opt.solver structì— í•™ìŠµ íŒŒë¼ë¯¸í„°ê°€ ì €ì¥ë˜ê³ , opt.layer structì— ëª¨ë¸ íŒŒë¼ë¯¸í„°ê°€ ì •ì˜ë¨
+###makeModel.m
+- init.mì—ì„œ ì •ì˜ëœ ëª¨ë¸ íŒŒë¼ë¯¸í„°ë¥¼ ë°”íƒ•ìœ¼ë¡œ weight, bias ë“± í•™ìŠµ ëŒ€ìƒ ë³€ìˆ˜ë“¤ì„ ì´ˆê¸°í™”í•˜ì—¬ model struct ë° optionì„ returní•˜ëŠ” í•¨ìˆ˜
+- weightì˜ ê²½ìš° Var(1,0)*sqrt(2/n)ìœ¼ë¡œ ì´ˆê¸°í™”
+- biasì˜ ê²½ìš° 0ë¡œ ì´ˆê¸°í™”
+- PReLUì˜ alphaê°’ì€ í•´ë‹¹ layer weightë¡œ ì €ì¥ë˜ê³  ë…¼ë¬¸ì—ì„œ ì‚¬ìš©í•œ ê°’ì¸ 0.25ë¡œ ì´ˆê¸°í™”
+###train.m
+- í•™ìŠµ loopë¥¼ ì‹¤í–‰í•˜ëŠ” í•¨ìˆ˜
+- train dataë¥¼ batch sizeëŒ€ë¡œ ë‚˜ëˆ„ê³  ëœë¤í•œ indexë¥¼ ë¶€ì—¬í•¨
+- learning rateë¥¼ iterationì´ ì§€ë‚˜ë©´ì„œ decay í•˜ë„ë¡ ì„¤ì • (inv)  <p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616573/f3f2aee0-43b8-11e6-8a7d-3643e2e97ad6.png'/></p>  
+- forward.m í•¨ìˆ˜ë¥¼ ì´ìš©í•˜ì—¬ ê° layerì˜ outputì„ ê³„ì‚°
+- forward ê³„ì‚°ê²°ê³¼ë¥¼ ì´ìš©í•˜ì—¬ Cross Entropy (Softmax output) ë‚˜ MSE (MLP output) ë¥¼ Cost functionìœ¼ë¡œ ê³„ì‚°
+- errorì™€ ê° layer oututì„ ì´ìš©í•˜ì—¬ backward.m í•¨ìˆ˜ë¥¼ ì‹¤í–‰ (back-propagation)
+- errorì™€ test ê²°ê³¼ë¥¼ ì´ìš©í•˜ì—¬ ê·¸ë˜í”„ë¥¼ plot
+###test.m
+- forward.m í•¨ìˆ˜ë¥¼ ì´ìš©í•˜ì—¬ test dataì— ëŒ€í•œ error rateë¥¼ return 
+###drawFromMat.m
+- í•™ìŠµëœ ëª¨ë¸ì„ import í•˜ì—¬ cost graphì™€ error rate graphë¥¼ ê·¸ë¦¬ëŠ” ìŠ¤í¬ë¦½íŠ¸
+
+###forward.m
+- CNN modelì— input batchë¥¼ ë„£ì–´ ê° layerì˜ outputì„ return
+- Convolution layer  
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616556/f389f8fa-43b8-11e6-99d3-bcf3587dacb1.png'/>
+</p>
+(X, Y: 4-dim matrix, batch_size * width * height * channel)  
+(W: 5-dim matrix, 1 * kernel_width * kernel_height * input_channel * output_channel)  
+
 - MAX pooling layer
 - Fully-connected layer
-Y=W*X+b
-(X, Y: 4-dim matrix, batch_size * width * height * channel)
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616556/f389f8fa-43b8-11e6-99d3-bcf3587dacb1.png'/>
+</p>
+(X, Y: 4-dim matrix, batch_size * width * height * channel)  
 (W: 5-dim matrix, 1 * kernel_width * kernel_height * input_channel * output_channel)
+
 - ReLU
-Y=max?(X,0)
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616557/f38bb744-43b8-11e6-832f-168beaf289e2.png'/>
+</p>
 - PReLU
-Y=ma x?(X,0)+alpha*min?(X,0)
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616558/f38da00e-43b8-11e6-9ed6-76967f7291ee.png'/>
+</p>
 - Softmax
-Cross Entropy ¸¦ Cost functionÀ¸·Î ÀÌ¿ëÇÏ±â À§ÇØ softmax¸¦ ÀÌ¿ëÇÏ¿´À½
-y_i=e^(x_i )/(¢²_(j=1)^n¢Æe^(x_j ) )
+
+Cross Entropy ë¥¼ Cost functionìœ¼ë¡œ ì´ìš©í•˜ê¸° ìœ„í•´ softmaxë¥¼ ì´ìš©í•˜ì˜€ìŒ
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616559/f395628a-43b8-11e6-9783-d83422ea829b.png'/>
+</p>
+
 - Dropout
-randÇÔ¼ö·Î ÀÓÀÇÀÇ node¸¦ 0À¸·Î ºñÈ°¼ºÈ­½ÃÅ´
-backward.m
-- forwardÇÑ °á°ú¿Í label°úÀÇ ¿¡·¯¸¦ ÀÌ¿ëÇÏ¿© back-propagationÀ» ¼öÇàÇÏ¿© weight¸¦ updateÇÏ´Â ÇÔ¼ö
+
+randí•¨ìˆ˜ë¡œ ì„ì˜ì˜ nodeë¥¼ 0ìœ¼ë¡œ ë¹„í™œì„±í™”ì‹œí‚´
+
+###backward.m
+- forwardí•œ ê²°ê³¼ì™€ labelê³¼ì˜ ì—ëŸ¬ë¥¼ ì´ìš©í•˜ì—¬ back-propagationì„ ìˆ˜í–‰í•˜ì—¬ weightë¥¼ updateí•˜ëŠ” í•¨ìˆ˜
 - Convolution layer
-º» ÄÚµå¿¡¼­´Â activation layer¸¦ µû·Î ¼³°èÇßÀ¸¹Ç·Î ´ÙÀ½°ú °°ÀÌ error°¡ propagateµÊ.
-¡ÓE/¡Óx=¡Óy/¡Óx  ¡ÓE/¡Óy=W*¡ÓE/¡Óy
-(¡ÓE/¡Óy´Â »óÀ§ layer¿¡¼­ ÀüÆÄµÈ °ªÀ» »ç¿ë)
-¶ÇÇÑ, weight´Â ´ÙÀ½°ú °°ÀÌ updateµÊ
-¡ÓE/¡Ów=¡Óy/¡Ów  ¡ÓE/¡Óy=X*¡ÓE/¡Óx
-¥ÄW= lr*¡ÓE/¡Ów-lr*weightdecay*W+momentum*¥ÄW
-Weight Decay term: (-lr*weightdecay*W)
-Momentum term: (momentum*¥ÄW)
+
+ë³¸ ì½”ë“œì—ì„œëŠ” activation layerë¥¼ ë”°ë¡œ ì„¤ê³„í–ˆìœ¼ë¯€ë¡œ ë‹¤ìŒê³¼ ê°™ì´ errorê°€ propagateë¨.
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616561/f39aa9d4-43b8-11e6-9a9b-8ac720e4448e.png'/>
+</p>
+(âˆ‚E/âˆ‚yëŠ” ìƒìœ„ layerì—ì„œ ì „íŒŒëœ ê°’ì„ ì‚¬ìš©)
+
+ë˜í•œ, weightëŠ” ë‹¤ìŒê³¼ ê°™ì´ updateë¨
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616560/f3995ade-43b8-11e6-9364-9778edd317bd.png'/>
+</p>
+Weight Decay term:
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616562/f3b0c458-43b8-11e6-882d-53962504b8a6.png'/>
+</p>
+Momentum term:
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616563/f3b29242-43b8-11e6-8cdd-30fbb5283c70.png'/>
+</p>
 - MAX pooling layer
-¾îµğ¿¡¼­ ¿Â ¿¡·¯ÀÎÁö µû·Î ÀúÀåÀº ¾ÈÇÏ°í error¸¦ ±×´ë·Î ÀÌÀü layer¿¡ Àü´Ş
+
+ì–´ë””ì—ì„œ ì˜¨ ì—ëŸ¬ì¸ì§€ ë”°ë¡œ ì €ì¥ì€ ì•ˆí•˜ê³  errorë¥¼ ê·¸ëŒ€ë¡œ ì´ì „ layerì— ì „ë‹¬
+
 - Fully-connected layer
-Convolution layer¿Í °°Àº ¹æ½ÄÀ¸·Î error propagate, weight update
+
+Convolution layerì™€ ê°™ì€ ë°©ì‹ìœ¼ë¡œ error propagate, weight update
+
 - ReLU
-ReLU LayerÀÇ input valueÀÌ À½¼öÀÌ¸é error¸¦ Á×ÀÌ°í ¾ç¼öÀÌ¸é error¸¦ ±×´ë·Î Àü´Ş
+
+ReLU Layerì˜ input valueì´ ìŒìˆ˜ì´ë©´ errorë¥¼ ì£½ì´ê³  ì–‘ìˆ˜ì´ë©´ errorë¥¼ ê·¸ëŒ€ë¡œ ì „ë‹¬
+
 - PReLU
-ReLU LayerÀÇ input valueÀÌ À½¼öÀÌ¸é alpha*error¸¦ Àü´ŞÇÏ°í ¾ç¼öÀÌ¸é error¸¦ ±×´ë·Î Àü´Ş
-alpha´Â ³í¹®¿¡ ³ª¿ÍÀÖ´Â ´ë·Î 0.25·Î initializeÇÑ µÚ ´ÙÀ½°ú °°ÀÌ update ÇÏ¿´´Ù.
-¡ÓE/¡Óa=¢²¢Æ¢²¢Æ?¡ÓE/(¡Óf(y))  (¡Óf(y))/¡Ó¥á?
-¥Äa=weightdecay*¥Äa+lr*¡ÓE/¡Óa
+
+ReLU Layerì˜ input valueì´ ìŒìˆ˜ì´ë©´ alpha*errorë¥¼ ì „ë‹¬í•˜ê³  ì–‘ìˆ˜ì´ë©´ errorë¥¼ ê·¸ëŒ€ë¡œ ì „ë‹¬  
+alphaëŠ” ë…¼ë¬¸ì— ë‚˜ì™€ìˆëŠ” ëŒ€ë¡œ 0.25ë¡œ initializeí•œ ë’¤ ë‹¤ìŒê³¼ ê°™ì´ update í•˜ì˜€ë‹¤.
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616564/f3b4b914-43b8-11e6-9640-adddc0b5a7d7.png'/>
+</p>
 - Softmax
-SoftmaxÀÇ Cross Entropy Cost function
-E=-1/n ¢²_(i=1)^n¢Æ?t_i logy_i+(1-t_i )log?(1-y_i)?
-¿Í Activation function
-y_i=e^(x_i )/(¢²_(j=1)^n¢Æe^(x_j ) )
-ÀÇ derivative¸¦ ÀÌ¿ëÇÏ¿© ´ÙÀ½°ú °°ÀÌ Error propagation ½ÄÀ» ¾òÀ» ¼ö ÀÖ´Ù.
-¥ä_i=¡ÓE/¡Óy  ¡Óy/¡Óx=1/n(t_i-y_i)
+
+Softmaxì˜ Cross Entropy Cost function
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616558/f38da00e-43b8-11e6-9ed6-76967f7291ee.png'/>
+</p>
+ì™€ Activation function
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616566/f3c39d58-43b8-11e6-9ae6-db647396e4a1.png'/>
+</p>
+ì˜ derivativeë¥¼ ì´ìš©í•˜ì—¬ ë‹¤ìŒê³¼ ê°™ì´ Error propagation ì‹ì„ ì–»ì„ ìˆ˜ ìˆë‹¤.
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616897/44caaa64-43bb-11e6-83b2-88cca84da623.png'/>
+</p>
+
 - Dropout
-Forward path¿¡¼­ ÀÓÀÇ·Î °í¸¥ zero-mask¸¦ ÀÌ¿ëÇÏ¿© ²¨Áø nodeµéÀº backward path¿¡¼­µµ error propagationÀÌ ¾ÈµÇµµ·Ï ÇÑ´Ù.
 
-2. ÇĞ½À °á°ú ¹× ¼º´É
-¨ç CPCPFRF
+Forward pathì—ì„œ ì„ì˜ë¡œ ê³ ë¥¸ zero-maskë¥¼ ì´ìš©í•˜ì—¬ êº¼ì§„ nodeë“¤ì€ backward pathì—ì„œë„ error propagationì´ ì•ˆë˜ë„ë¡ í•œë‹¤.
+
+##2. í•™ìŠµ ê²°ê³¼ ë° ì„±ëŠ¥
+â‘  CPCPFRF
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616567/f3c841fa-43b8-11e6-9f89-c81a7f88abd3.png'/>
+</p>
  
-¨è CPCPFRFS
+â‘¡ CPCPFRFS
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616568/f3d7424a-43b8-11e6-9eb6-2b3f40b93d03.png'/>
+</p>
  
-¨é CRPCRPFRFS
+â‘¢ CRPCRPFRFS
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616569/f3d919e4-43b8-11e6-9922-12ad3a974b6c.png'/>
+</p>
  
-¨ê CPrPCPrPFPrFS
+â‘£ CPrPCPrPFPrFS
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616570/f3db2842-43b8-11e6-862d-63fd37ce2bb7.png'/>
+</p>
  
-¨ë, ¨ì CPrPCPrPFPrDFS, CPrPCPrPFPrDFS (2)
+â‘¤, â‘¥ CPrPCPrPFPrDFS, CPrPCPrPFPrDFS (2)
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616571/f3e7aebe-43b8-11e6-9e32-7a55fad49ed2.png'/>
+</p>
  
-¨í CPrPDCPrPDFPrDFS
+â‘¦ CPrPDCPrPDFPrDFS
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616572/f3f1e726-43b8-11e6-930d-0d5afc47ff28.png'/>
+</p>
  
 
-	¨ç	¨è	¨é	¨ê	¨ë	¨ì	¨í
-Base Learning Rate	0.00001	0.01	0.01	0.01	0.01	0.02	0.01
-Gamma	0.01	0.01	0.001	0.001	0.0001	0.0001	0.0001
-Power	0.75	0.75	0.75	0.75	0.75	0.75	0.75
-Batch Size	60	60	60	60	60	60	60
-Epoch	30	30	30	30	30	30	30
-Weight Decay	0.0005	0.0005	0.0005	0.0005	0.0005	0.0005	0.0005
-Momentum	0.9	0.9	0.9	0.9	0.9	0.9	0.9
-Error Rate	9.25%	1.16%	0.81%	1.01%	0.79%	0.67%	0.70%
 
-       
-    
-¿ŞÂÊ À§ºÎÅÍ Â÷·Ê´ë·Î ¨ç, ¨è, ¨é, ¨ê, ¨ë, ¨ì, ¨í
-ÃÖÁ¾ ¼º´É: Accuracy 99.33%
+<p align="center">
+<img src='https://cloud.githubusercontent.com/assets/16096001/16616973/c73a0ea4-43bb-11e6-84b6-a0e77463b9b2.png'/>
+</p>
+ 
+
+**ìµœì¢… ì„±ëŠ¥: Accuracy 99.33%**
