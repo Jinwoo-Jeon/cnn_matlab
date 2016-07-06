@@ -3,12 +3,12 @@
 ###Jinwoo Jeon
 
 ##1. 코드 설명 및 실행
-매트랩 코드로 구성되어 있음 (repelem 함수 때문에 MATLAB 2015a 이상 버전에서만 실행 가능할 듯)
+매트랩 코드로 구성되어 있음 (repelem 함수 때문에 MATLAB 2015a 이상 버전에서만 실행 가능할 듯)  
 ###RUN_script.m
 - 실행용 스크립트
 - preproc_data 주석을 해제하면 데이터를 새로 만들고 init 주석을 해제하면 모델을 새로 만듬
 - 학습된 모델을 불러오려는 경우 init을 주석처리하고, .mat파일을 수동으로 불러온 뒤 RUN_script.m을 실행하면 됨
-- 테스트만 하려는 경우 train을 주석하고 test를 주석 해제한 후 실행
+- 테스트만 하려는 경우 train을 주석하고 test를 주석 해제한 후 실행  
 ###preproc_data.m
 - MNIST.mat을 로드해서 데이터를 가공하는 스크립트
 - Data augmentation 및 Mean제거 (test data에서도 train mean제거)
