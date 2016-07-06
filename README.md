@@ -4,7 +4,7 @@
 
 ##1. 코드 설명 및 실행
 매트랩 코드로 구성되어 있음 (repelem 함수 때문에 MATLAB 2015a 이상 버전에서만 실행 가능할 듯)  
-###RUN_script.m
+####RUN_script.m
 
 - 실행용 스크립트
 - preproc_data 주석을 해제하면 데이터를 새로 만들고 init 주석을 해제하면 모델을 새로 만듬
