@@ -14,17 +14,17 @@
 ####preproc_data.m
 - MNIST.mat을 로드해서 데이터를 가공하는 스크립트
 - Data augmentation 및 Mean제거 (test data에서도 train mean제거)
-- 
+
 ####init.m
 - 학습에 필요한 파라미터 및 모델을 정의하는 스크립트
 - opt.solver struct에 학습 파라미터가 저장되고, opt.layer struct에 모델 파라미터가 정의됨
-- 
+
 ####makeModel.m
 - init.m에서 정의된 모델 파라미터를 바탕으로 weight, bias 등 학습 대상 변수들을 초기화하여 model struct 및 option을 return하는 함수
 - weight의 경우 Var(1,0)*sqrt(2/n)으로 초기화
 - bias의 경우 0로 초기화
 - PReLU의 alpha값은 해당 layer weight로 저장되고 논문에서 사용한 값인 0.25로 초기화
-- 
+
 ####train.m
 - 학습 loop를 실행하는 함수
 - train data를 batch size대로 나누고 랜덤한 index를 부여함
@@ -34,10 +34,10 @@
 - forward 계산결과를 이용하여 Cross Entropy (Softmax output) 나 MSE (MLP output) 를 Cost function으로 계산
 - error와 각 layer outut을 이용하여 backward.m 함수를 실행 (back-propagation)
 - error와 test 결과를 이용하여 그래프를 plot
-- 
+
 ####test.m
 - forward.m 함수를 이용하여 test data에 대한 error rate를 return 
-- 
+
 ####drawFromMat.m
 - 학습된 모델을 import 하여 cost graph와 error rate graph를 그리는 스크립트
 
