@@ -10,7 +10,7 @@ disp('loading data...')
 % preproc_data;
 
 disp('init model...')
-% init;
+init;
 
 
 
